@@ -377,7 +377,7 @@ def create_sample(obj):
 
     bpy.ops.object.mode_set(mode='OBJECT')
     pbone = obj.pose.bones[bones['finger.01']]
-    pbone.rigify_type = 'legacy.finger'
+    pbone.rigify_type = 'cessen.finger'
     pbone.lock_location = (True, True, True)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False

@@ -87,7 +87,7 @@ class RigPart:
         else:
             layers = None
 
-        primary_rotation_axis = params.primary_rotation_axis_legacy
+        primary_rotation_axis = params.primary_rotation_axis
 
         # Leg is based on common limb
         self.fk_limb = limb_common.FKLimb(obj, self.org_bones[0], self.org_bones[1], self.org_bones[2], primary_rotation_axis, layers)

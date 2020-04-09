@@ -361,7 +361,7 @@ def create_sample(obj):
 
     bpy.ops.object.mode_set(mode='OBJECT')
     pbone = obj.pose.bones[bones['neck']]
-    pbone.rigify_type = 'legacy.neck_short'
+    pbone.rigify_type = 'cessen.neck_short'
     pbone.lock_location = (True, True, True)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False

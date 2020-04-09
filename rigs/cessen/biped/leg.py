@@ -20,62 +20,66 @@
 
 import bpy
 import importlib
-from .arm_lib import fk, ik, deform
+from .leg_lib import fk, ik, deform
 
-from rigify.rig_ui_template import UTILITIES_RIG_OLD_ARM, REGISTER_RIG_OLD_ARM
+from rigify.rig_ui_template import UTILITIES_RIG_OLD_LEG, REGISTER_RIG_OLD_LEG
 
 importlib.reload(fk)
 importlib.reload(ik)
 importlib.reload(deform)
 
 script = """
-fk_arm = ["%s", "%s", "%s"]
-ik_arm = ["%s", "%s", "%s", "%s"]
-if is_selected(fk_arm+ik_arm):
-    layout.prop(pose_bones[ik_arm[2]], '["ikfk_switch"]', text="FK / IK (" + ik_arm[2] + ")", slider=True)
-    props = layout.operator("pose.rigify_arm_fk2ik_" + rig_id, text="Snap FK->IK (" + fk_arm[0] + ")")
-    props.uarm_fk = fk_arm[0]
-    props.farm_fk = fk_arm[1]
-    props.hand_fk = fk_arm[2]
-    props.uarm_ik = ik_arm[0]
-    props.farm_ik = ik_arm[1]
-    props.hand_ik = ik_arm[2]
-    props = layout.operator("pose.rigify_arm_ik2fk_" + rig_id, text="Snap IK->FK (" + fk_arm[0] + ")")
-    props.uarm_fk = fk_arm[0]
-    props.farm_fk = fk_arm[1]
-    props.hand_fk = fk_arm[2]
-    props.uarm_ik = ik_arm[0]
-    props.farm_ik = ik_arm[1]
-    props.hand_ik = ik_arm[2]
-    props.pole = ik_arm[3]
-if is_selected(fk_arm):
+fk_leg = ["%s", "%s", "%s", "%s"]
+ik_leg = ["%s", "%s", "%s", "%s", "%s", "%s"]
+if is_selected(fk_leg+ik_leg):
+    layout.prop(pose_bones[ik_leg[2]], '["ikfk_switch"]', text="FK / IK (" + ik_leg[2] + ")", slider=True)
+    p = layout.operator("pose.rigify_leg_fk2ik_" + rig_id, text="Snap FK->IK (" + fk_leg[0] + ")")
+    p.thigh_fk = fk_leg[0]
+    p.shin_fk  = fk_leg[1]
+    p.foot_fk  = fk_leg[2]
+    p.mfoot_fk = fk_leg[3]
+    p.thigh_ik = ik_leg[0]
+    p.shin_ik  = ik_leg[1]
+    p.foot_ik = ik_leg[2]
+    p.mfoot_ik = ik_leg[5]
+    p = layout.operator("pose.rigify_leg_ik2fk_" + rig_id, text="Snap IK->FK (" + fk_leg[0] + ")")
+    p.thigh_fk  = fk_leg[0]
+    p.shin_fk   = fk_leg[1]
+    p.mfoot_fk  = fk_leg[3]
+    p.thigh_ik  = ik_leg[0]
+    p.shin_ik   = ik_leg[1]
+    p.foot_ik   = ik_leg[2]
+    p.pole      = ik_leg[3]
+    p.footroll  = ik_leg[4]
+    p.mfoot_ik  = ik_leg[5]
+if is_selected(fk_leg):
     try:
-        pose_bones[fk_arm[0]]["isolate"]
-        layout.prop(pose_bones[fk_arm[0]], '["isolate"]', text="Isolate Rotation (" + fk_arm[0] + ")", slider=True)
+        pose_bones[fk_leg[0]]["isolate"]
+        layout.prop(pose_bones[fk_leg[0]], '["isolate"]', text="Isolate Rotation (" + fk_leg[0] + ")", slider=True)
     except KeyError:
         pass
-    layout.prop(pose_bones[fk_arm[0]], '["stretch_length"]', text="Length FK (" + fk_arm[0] + ")", slider=True)
-if is_selected(ik_arm):
-    layout.prop(pose_bones[ik_arm[2]], '["stretch_length"]', text="Length IK (" + ik_arm[2] + ")", slider=True)
-    layout.prop(pose_bones[ik_arm[2]], '["auto_stretch"]', text="Auto-Stretch IK (" + ik_arm[2] + ")", slider=True)
-if is_selected([ik_arm[3]]):
-    layout.prop(pose_bones[ik_arm[3]], '["follow"]', text="Follow Parent (" + ik_arm[3] + ")", slider=True)
+    layout.prop(pose_bones[fk_leg[0]], '["stretch_length"]', text="Length FK (" + fk_leg[0] + ")", slider=True)
+if is_selected(ik_leg):
+    layout.prop(pose_bones[ik_leg[2]], '["stretch_length"]', text="Length IK (" + ik_leg[2] + ")", slider=True)
+    layout.prop(pose_bones[ik_leg[2]], '["auto_stretch"]', text="Auto-Stretch IK (" + ik_leg[2] + ")", slider=True)
+if is_selected([ik_leg[3]]):
+    layout.prop(pose_bones[ik_leg[3]], '["follow"]', text="Follow Foot (" + ik_leg[3] + ")", slider=True)
 """
 
 hose_script = """
-hose_arm = ["%s", "%s", "%s", "%s", "%s"]
-if is_selected(hose_arm):
-    layout.prop(pose_bones[hose_arm[2]], '["smooth_bend"]', text="Smooth Elbow (" + hose_arm[2] + ")", slider=True)
+hose_leg = ["%s", "%s", "%s", "%s", "%s"]
+if is_selected(hose_leg):
+    layout.prop(pose_bones[hose_leg[2]], '["smooth_bend"]', text="Smooth Knee (" + hose_leg[2] + ")", slider=True)
 """
 
 end_script = """
-if is_selected(fk_arm+ik_arm):
+if is_selected(fk_leg+ik_leg):
     layout.separator()
 """
 
 
 class Rig:
-    """ An arm rig, with IK/FK switching and hinge switch.
+    """ A leg rig, with IK/FK switching, a hinge switch, and foot roll.
 
     """
     def __init__(self, obj, bone, params):
@@ -106,14 +110,14 @@ class Rig:
         hose_controls = self.deform_rig.generate()
         fk_controls = self.fk_rig.generate()
         ik_controls = self.ik_rig.generate()
-        ui_script = script % (fk_controls[0], fk_controls[1], fk_controls[2], ik_controls[0], ik_controls[1], ik_controls[2], ik_controls[3])
-        if self.params.use_complex_arm:
+        ui_script = script % (fk_controls[0], fk_controls[1], fk_controls[2], fk_controls[3], ik_controls[0], ik_controls[1], ik_controls[2], ik_controls[3], ik_controls[4], ik_controls[5])
+        if self.params.use_complex_leg:
             ui_script += hose_script % (hose_controls[0], hose_controls[1], hose_controls[2], hose_controls[3], hose_controls[4])
         ui_script += end_script
         return {
             'script': [ui_script],
-            'utilities': UTILITIES_RIG_OLD_ARM,
-            'register': REGISTER_RIG_OLD_ARM,
+            'utilities': UTILITIES_RIG_OLD_LEG,
+            'register': REGISTER_RIG_OLD_LEG,
         }
 
 
@@ -122,13 +126,13 @@ def add_parameters(params):
         RigifyParameters PropertyGroup
 
     """
-    params.use_complex_arm = bpy.props.BoolProperty(name="Complex Arm Rig", default=True, description="Generate the full, complex arm rig with twist bones and rubber-hose controls")
+    params.use_complex_leg = bpy.props.BoolProperty(name="Complex Leg Rig", default=True, description="Generate the full, complex leg rig with twist bones and rubber-hose controls")
     params.bend_hint = bpy.props.BoolProperty(name="Bend Hint", default=True, description="Give IK chain a hint about which way to bend. Useful for perfectly straight chains")
 
     items = [('X', 'X', ''), ('Y', 'Y', ''), ('Z', 'Z', ''), ('-X', '-X', ''), ('-Y', '-Y', ''), ('-Z', '-Z', '')]
-    params.primary_rotation_axis_legacy = bpy.props.EnumProperty(items=items, name="Primary Rotation Axis", default='X')
+    params.primary_rotation_axis = bpy.props.EnumProperty(items=items, name="Primary Rotation Axis", default='X')
 
-    params.elbow_base_name = bpy.props.StringProperty(name="Elbow Name", default="elbow", description="Base name for the generated elbow-related controls")
+    params.knee_base_name = bpy.props.StringProperty(name="Knee Name", default="knee", description="Base name for the generated knee-related controls")
 
     params.separate_ik_layers = bpy.props.BoolProperty(name="Separate IK Control Layers:", default=False, description="Enable putting the ik controls on a separate layer from the fk controls")
     params.ik_layers = bpy.props.BoolVectorProperty(size=32, description="Layers for the ik controls to be on")
@@ -142,14 +146,14 @@ def parameters_ui(layout, params):
 
     """
     col = layout.column()
-    col.prop(params, "use_complex_arm")
+    col.prop(params, "use_complex_leg")
 
     r = layout.row()
-    r.label(text="Elbow rotation axis:")
-    r.prop(params, "primary_rotation_axis_legacy", text="")
+    r.label(text="Knee rotation axis:")
+    r.prop(params, "primary_rotation_axis", text="")
 
     r = layout.row()
-    r.prop(params, "elbow_base_name")
+    r.prop(params, "knee_base_name")
 
     r = layout.row()
     r.prop(params, "bend_hint")
@@ -200,7 +204,7 @@ def parameters_ui(layout, params):
     row.prop(params, "ik_layers", index=30, toggle=True, text="")
     row.prop(params, "ik_layers", index=31, toggle=True, text="")
 
-    if params.use_complex_arm:
+    if params.use_complex_leg:
         r = layout.row()
         r.prop(params, "separate_hose_layers")
 
@@ -255,43 +259,78 @@ def create_sample(obj):
 
     bones = {}
 
-    bone = arm.edit_bones.new('upper_arm')
-    bone.head[:] = 0.0000, 0.0000, 0.0000
-    bone.tail[:] = 0.3000, 0.0300, 0.0000
-    bone.roll = 1.5708
+    bone = arm.edit_bones.new('thigh')
+    bone.head[:] = -0.0000, 0.0000, 1.0000
+    bone.tail[:] = -0.0000, -0.0500, 0.5000
+    bone.roll = -0.0000
     bone.use_connect = False
-    bones['upper_arm'] = bone.name
-    bone = arm.edit_bones.new('forearm')
-    bone.head[:] = 0.3000, 0.0300, 0.0000
-    bone.tail[:] = 0.6000, 0.0000, 0.0000
-    bone.roll = 1.5708
+    bones['thigh'] = bone.name
+    bone = arm.edit_bones.new('shin')
+    bone.head[:] = -0.0000, -0.0500, 0.5000
+    bone.tail[:] = -0.0000, 0.0000, 0.1000
+    bone.roll = -0.0000
     bone.use_connect = True
-    bone.parent = arm.edit_bones[bones['upper_arm']]
-    bones['forearm'] = bone.name
-    bone = arm.edit_bones.new('hand')
-    bone.head[:] = 0.6000, 0.0000, 0.0000
-    bone.tail[:] = 0.7000, 0.0000, 0.0000
+    bone.parent = arm.edit_bones[bones['thigh']]
+    bones['shin'] = bone.name
+    bone = arm.edit_bones.new('foot')
+    bone.head[:] = -0.0000, 0.0000, 0.1000
+    bone.tail[:] = 0.0000, -0.1200, 0.0300
+    bone.roll = 0.0000
+    bone.use_connect = True
+    bone.parent = arm.edit_bones[bones['shin']]
+    bones['foot'] = bone.name
+    bone = arm.edit_bones.new('heel')
+    bone.head[:] = -0.0000, 0.0000, 0.1000
+    bone.tail[:] = -0.0000, 0.0600, 0.0000
+    bone.roll = -0.0000
+    bone.use_connect = True
+    bone.parent = arm.edit_bones[bones['shin']]
+    bones['heel'] = bone.name
+    bone = arm.edit_bones.new('heel.02')
+    bone.head[:] = -0.0500, -0.0200, 0.0000
+    bone.tail[:] = 0.0500, -0.0200, 0.0000
+    bone.roll = 0.0000
+    bone.use_connect = False
+    bone.parent = arm.edit_bones[bones['heel']]
+    bones['heel.02'] = bone.name
+    bone = arm.edit_bones.new('toe')
+    bone.head[:] = 0.0000, -0.1200, 0.0300
+    bone.tail[:] = 0.0000, -0.2000, 0.0300
     bone.roll = 3.1416
     bone.use_connect = True
-    bone.parent = arm.edit_bones[bones['forearm']]
-    bones['hand'] = bone.name
+    bone.parent = arm.edit_bones[bones['foot']]
+    bones['toe'] = bone.name
 
     bpy.ops.object.mode_set(mode='OBJECT')
-    pbone = obj.pose.bones[bones['upper_arm']]
-    pbone.rigify_type = 'legacy.biped.arm'
+    pbone = obj.pose.bones[bones['thigh']]
+    pbone.rigify_type = 'cessen.biped.leg'
     pbone.lock_location = (True, True, True)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
     pbone.lock_scale = (False, False, False)
     pbone.rotation_mode = 'QUATERNION'
-    pbone = obj.pose.bones[bones['forearm']]
+    pbone = obj.pose.bones[bones['shin']]
     pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
     pbone.lock_scale = (False, False, False)
     pbone.rotation_mode = 'QUATERNION'
-    pbone = obj.pose.bones[bones['hand']]
+    pbone = obj.pose.bones[bones['foot']]
+    pbone.rigify_type = ''
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    pbone = obj.pose.bones[bones['heel']]
+    pbone.rigify_type = ''
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    pbone = obj.pose.bones[bones['toe']]
     pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)

@@ -551,7 +551,7 @@ def create_sample(obj):
     pbone.lock_scale = (False, False, False)
     pbone.rotation_mode = 'QUATERNION'
     pbone = obj.pose.bones[bones['hips']]
-    pbone['rigify_type'] = 'legacy.spine'
+    pbone['rigify_type'] = 'cessen.spine'
     pbone.rigify_parameters.chain_bone_controls = "1, 2, 3"
 
     bpy.ops.object.mode_set(mode='EDIT')
