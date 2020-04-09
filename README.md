@@ -1,4 +1,4 @@
-# Cessen's Custom Rigify Extensions
+# Cessen's Rigify Extensions
 
 This is a collection of custom rig types and metarigs that can be used with Rigify in Blender 2.8x and higher.
 
