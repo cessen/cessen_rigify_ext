@@ -126,7 +126,7 @@ def add_parameters(params):
     params.bend_hint = bpy.props.BoolProperty(name="Bend Hint", default=True, description="Give IK chain a hint about which way to bend. Useful for perfectly straight chains")
 
     items = [('X', 'X', ''), ('Y', 'Y', ''), ('Z', 'Z', ''), ('-X', '-X', ''), ('-Y', '-Y', ''), ('-Z', '-Z', '')]
-    params.primary_rotation_axis = bpy.props.EnumProperty(items=items, name="Primary Rotation Axis", default='X')
+    params.primary_rotation_axis_cessen = bpy.props.EnumProperty(items=items, name="Primary Rotation Axis", default='X')
 
     params.elbow_base_name = bpy.props.StringProperty(name="Elbow Name", default="elbow", description="Base name for the generated elbow-related controls")
 

@@ -86,7 +86,7 @@ class RigPart:
         else:
             self.layers = None
         bend_hint = params.bend_hint
-        primary_rotation_axis = params.primary_rotation_axis
+        primary_rotation_axis = params.primary_rotation_axis_cessen
         pole_target_base_name = self.params.knee_base_name + "_target"
 
         # Leg is based on common limb

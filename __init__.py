@@ -1,3 +1,3 @@
 rigify_info = {
-    "name": "Legacy Rigify Rigs",
+    "name": "Cessen's Rigify Extensions",
 }

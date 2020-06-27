@@ -47,7 +47,7 @@ class RigPart:
             layers = None
         use_complex_rig = params.use_complex_arm
         elbow_base_name = params.elbow_base_name
-        primary_rotation_axis = params.primary_rotation_axis
+        primary_rotation_axis = params.primary_rotation_axis_cessen
 
         # Based on common limb
         self.rubber_hose_limb = limb_common.RubberHoseLimb(obj, self.org_bones[0], self.org_bones[1], self.org_bones[2], use_complex_rig, elbow_base_name, primary_rotation_axis, layers)

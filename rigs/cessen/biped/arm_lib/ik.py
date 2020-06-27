@@ -54,7 +54,7 @@ class RigPart:
         else:
             layers = None
         bend_hint = params.bend_hint
-        primary_rotation_axis = params.primary_rotation_axis
+        primary_rotation_axis = params.primary_rotation_axis_cessen
         pole_target_base_name = self.params.elbow_base_name + "_target"
 
         # Arm is based on common limb

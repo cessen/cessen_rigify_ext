@@ -52,7 +52,7 @@ class Rig:
             self.ex_layers = None
 
         # Get other rig parameters
-        self.primary_rotation_axis = params.primary_rotation_axis_old
+        self.primary_rotation_axis = params.primary_rotation_axis_cessen
         self.use_digit_twist = params.use_digit_twist
 
     def deform(self):
@@ -282,7 +282,7 @@ def add_parameters(params):
         RigifyParameters PropertyGroup
     """
     items = [('X', 'X', ''), ('Y', 'Y', ''), ('Z', 'Z', ''), ('-X', '-X', ''), ('-Y', '-Y', ''), ('-Z', '-Z', '')]
-    params.primary_rotation_axis_old = bpy.props.EnumProperty(items=items, name="Primary Rotation Axis", default='X')
+    params.primary_rotation_axis_cessen = bpy.props.EnumProperty(items=items, name="Primary Rotation Axis", default='X')
 
     params.separate_extra_layers = bpy.props.BoolProperty(name="Separate Secondary Control Layers:", default=False, description="Enable putting the secondary controls on a separate layer from the primary controls")
     params.extra_layers = bpy.props.BoolVectorProperty(size=32, description="Layers for the secondary controls to be on")
@@ -341,7 +341,7 @@ def parameters_ui(layout, params):
 
     r = layout.row()
     r.label(text="Bend rotation axis:")
-    r.prop(params, "primary_rotation_axis_old", text="")
+    r.prop(params, "primary_rotation_axis_cessen", text="")
 
     col = layout.column()
     col.prop(params, "use_digit_twist")
