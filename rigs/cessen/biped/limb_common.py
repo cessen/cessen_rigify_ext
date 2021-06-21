@@ -156,17 +156,9 @@ class FKLimb:
 
         # Set up custom properties
         if parent is not None:
-            prop = rna_idprop_ui_prop_get(ulimb_p, "isolate", create=True)
-            ulimb_p["isolate"] = 0.0
-            prop["soft_min"] = prop["min"] = 0.0
-            prop["soft_max"] = prop["max"] = 1.0
+            make_property(ulimb_p, "isolate", 0.0)
 
-        prop = rna_idprop_ui_prop_get(ulimb_p, "stretch_length", create=True)
-        ulimb_p["stretch_length"] = 1.0
-        prop["min"] = 0.05
-        prop["max"] = 20.0
-        prop["soft_min"] = 0.25
-        prop["soft_max"] = 4.0
+        make_property(ulimb_p, "stretch_length", 1.0, min=0.05, max=20.0, soft_min=0.25, soft_max=4.0)
 
         # Stretch drivers
         def add_stretch_drivers(pose_bone):
@@ -502,28 +494,13 @@ class IKLimb:
 
         # Set up custom properties
         if self.switch is True:
-            prop = rna_idprop_ui_prop_get(elimb_p, "ikfk_switch", create=True)
-            elimb_p["ikfk_switch"] = 0.0
-            prop["soft_min"] = prop["min"] = 0.0
-            prop["soft_max"] = prop["max"] = 1.0
+            make_property(elimb_p, "ikfk_switch", 0.0)
 
         if self.pole_parent is not None:
-            prop = rna_idprop_ui_prop_get(pole_p, "follow", create=True)
-            pole_p["follow"] = 1.0
-            prop["soft_min"] = prop["min"] = 0.0
-            prop["soft_max"] = prop["max"] = 1.0
+            make_property(pole_p, "follow", 1.0)
 
-        prop = rna_idprop_ui_prop_get(elimb_p, "stretch_length", create=True)
-        elimb_p["stretch_length"] = 1.0
-        prop["min"] = 0.05
-        prop["max"] = 20.0
-        prop["soft_min"] = 0.25
-        prop["soft_max"] = 4.0
-
-        prop = rna_idprop_ui_prop_get(elimb_p, "auto_stretch", create=True)
-        elimb_p["auto_stretch"] = 1.0
-        prop["soft_min"] = prop["min"] = 0.0
-        prop["soft_max"] = prop["max"] = 1.0
+        make_property(elimb_p, "stretch_length", 1.0, min=0.05, max=20.0, soft_min=0.25, soft_max=4.0)
+        make_property(elimb_p, "auto_stretch", 1.0)
 
         # Stretch parameter drivers
         def add_stretch_drivers(pose_bone):
@@ -1097,10 +1074,7 @@ class RubberHoseLimb:
             flimb1_smoother_p.bone.bbone_easeout = 1.0
 
             # Custom properties
-            prop = rna_idprop_ui_prop_get(jhose_p, "smooth_bend", create=True)
-            jhose_p["smooth_bend"] = 0.0
-            prop["soft_min"] = prop["min"] = 0.0
-            prop["soft_max"] = prop["max"] = 1.0
+            make_property(jhose_p, "smooth_bend", 0.0)
 
             # Constraints
             con = ulimb1_p.constraints.new('COPY_LOCATION')

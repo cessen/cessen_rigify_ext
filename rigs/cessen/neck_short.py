@@ -191,27 +191,11 @@ class Rig:
         head_ctrl_p.custom_shape_transform = pb[self.org_bones[-1]]
 
         # Custom properties
-        prop = rna_idprop_ui_prop_get(head_ctrl_p, "inf_extent", create=True)
-        head_ctrl_p["inf_extent"] = 0.5
-        prop["min"] = 0.0
-        prop["max"] = 1.0
-        prop["soft_min"] = 0.0
-        prop["soft_max"] = 1.0
-
-        prop = rna_idprop_ui_prop_get(head_ctrl_p, "neck_follow", create=True)
-        head_ctrl_p["neck_follow"] = 1.0
-        prop["min"] = 0.0
-        prop["max"] = 2.0
-        prop["soft_min"] = 0.0
-        prop["soft_max"] = 1.0
+        make_property(head_ctrl_p, "inf_extent", 0.5)
+        make_property(head_ctrl_p, "neck_follow", 1.0, max=2.0, soft_max=1.0)
 
         if self.isolate:
-            prop = rna_idprop_ui_prop_get(head_ctrl_p, "isolate", create=True)
-            head_ctrl_p["isolate"] = 0.0
-            prop["min"] = 0.0
-            prop["max"] = 1.0
-            prop["soft_min"] = 0.0
-            prop["soft_max"] = 1.0
+            make_property(head_ctrl_p, "isolate", 0.0)
 
         # Constraints
 
