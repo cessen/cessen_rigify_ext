@@ -21,7 +21,6 @@
 import re
 
 import bpy
-from rna_prop_ui import rna_idprop_ui_prop_get
 from mathutils import Vector
 
 from rigify.utils import MetarigError
@@ -29,6 +28,8 @@ from rigify.utils import copy_bone
 from rigify.utils import connected_children_names
 from rigify.utils import strip_org, make_mechanism_name, make_deformer_name
 from rigify.utils import create_widget, create_limb_widget
+
+from rigify.utils.mechanism import make_property
 
 
 class Rig:

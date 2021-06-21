@@ -19,13 +19,14 @@
 from math import pi
 
 import bpy
-from rna_prop_ui import rna_idprop_ui_prop_get
 from mathutils import Vector
 
 from rigify.utils import angle_on_plane, align_bone_roll, align_bone_z_axis
 from rigify.utils import new_bone, copy_bone, put_bone, make_nonscaling_child
 from rigify.utils import strip_org, make_mechanism_name, make_deformer_name, insert_before_lr
 from rigify.utils import create_widget, create_limb_widget, create_line_widget, create_sphere_widget
+
+from rigify.utils.mechanism import make_property
 
 
 class FKLimb:

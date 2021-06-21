@@ -27,13 +27,15 @@ from math import floor
 
 import bpy
 from mathutils import Vector
-from rna_prop_ui import rna_idprop_ui_prop_get
 
 from rigify.utils import MetarigError
 from rigify.utils import copy_bone, new_bone, flip_bone, put_bone
 from rigify.utils import connected_children_names
 from rigify.utils import strip_org, make_mechanism_name, make_deformer_name
 from rigify.utils import create_circle_widget, create_cube_widget
+
+from rigify.utils.mechanism import make_property
+
 
 script = """
 main = "%s"
